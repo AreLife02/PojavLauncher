@@ -9,6 +9,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-22.04
+    permissions:
+      contents: write
     env:
       CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
     steps:
@@ -58,3 +60,13 @@ jobs:
         with:
           name: imibiyum-launcher
           path: out/imibiyum-launcher.apk
+
+      - name: Publish APK to Releases
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete son-surum -y --cleanup-tag || true
+          gh release create son-surum out/imibiyum-launcher.apk \
+            --title "Imibiyum Launcher - son surum" \
+            --notes "En son derlenen APK." \
+            --prerelease
